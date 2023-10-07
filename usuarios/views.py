@@ -7,8 +7,10 @@ from django.contrib.auth import authenticate, login
 
 
 def cadastro(request):
+
     if request.method == 'GET':
         return render(request, 'cadastro.html')
+
     elif request.method == 'POST':
         primeiro_nome = request.POST.get('primeiro_nome')
         ultimo_nome = request.POST.get('ultimo_nome')
@@ -28,6 +30,7 @@ def cadastro(request):
             return redirect('/usuarios/cadastro')
 
         try:
+
             # TODO Validar se o username do usuário não existe
             user = User.objects.create_user(
                 first_name=primeiro_nome,
@@ -36,30 +39,51 @@ def cadastro(request):
                 email=email,
                 password=senha
             )
+
             messages.add_message(request, constants.SUCCESS,
+
+
                                  'Usuário salvo com sucesso')
+
         except:
+
             messages.add_message(request, constants.ERROR,
+
+
                                  'Erro interno do sistema, contate um administrador')
+
             return redirect('/usuarios/cadastro')
 
         return HttpResponse('Passou')
 
 
 def logar(request):
+
     if request.method == "GET":
+
         return render(request, 'login.html')
+
     else:
+
         username = request.POST.get('username')
+
         senha = request.POST.get('senha')
 
         user = authenticate(username=username, password=senha)
 
     if user:
+
         login(request, user)
+
         # Acontecerá um erro ao redirecionar por enquanto, resolveremos nos próximos passos
+
         return redirect('/')
+
     else:
+
         messages.add_message(request, constants.ERROR,
+
+
                              'Usuario ou senha inválidos')
+
         return redirect('/usuarios/login')

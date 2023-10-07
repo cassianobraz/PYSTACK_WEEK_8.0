@@ -6,7 +6,6 @@
     <link href="{% static 'exames/css/gerenciar_pedidos.css' %}" rel="stylesheet">
 {% endblock 'head' %}
 
-
 {% block 'conteudo' %}
     <br>
     <br>
@@ -60,18 +59,17 @@
                           
                         </tr>
         
-                       
+                                        
+                        {% for acesso in acessos_medicos  %}
                             <tr class="linha-tabela">
-                                <td>01</td>
-                                <td>Status 1</td>
-                                <td>URL AQUI</td>
+                                <td>{{acesso.identificacao}}</td>
+                                <td>{{acesso.status}}</td>
+                                <td><a href="{{acesso.url}}">{{acesso.url}}</a></td>
                             </tr>
-                      
-                    
+                        {% endfor %}
                        
                     </table>
                 </div>
-
             </div>
         </div>
     </div>

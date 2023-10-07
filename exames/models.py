@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
+from secrets import token_urlsafe
+from django.utils import timezone
+from datetime import timedelta
 
 
 class TiposExames(models.Model):
@@ -62,7 +65,7 @@ class AcessoMedico(models.Model):
     criado_em = models.DateTimeField()
     data_exames_iniciais = models.DateField()
     data_exames_finais = models.DateField()
-    token = models.CharField(max_length=20)
+    token = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.token
@@ -73,13 +76,11 @@ class AcessoMedico(models.Model):
 
         super(AcessoMedico, self).save(*args, **kwargs)
 
+    @property
+    def status(self):
+        return 'Expirado' if timezone.now() > (self.criado_em + timedelta(hours=self.tempo_de_acesso)) else 'Ativo'
 
-@property
-def status(self):
-    return 'Expirado' if timezone.now() > (self.criado_em + timedelta(hours=self.tempo_de_acesso)) else 'Ativo'
-
-
-@property
-def url(self):
-    # TODO: reverse
-    return f"http://127.0.0.1:8000/exames/acesso_medico/{self.token}"
+    @property
+    def url(self):
+        # TODO: reverse
+        return f"http://127.0.0.1:8000/exames/acesso_medico/{self.token}"
